@@ -13,9 +13,19 @@ router.get('/', (req, res) => {
     });
   });
 
+  router.get('/surveydata', (req, res) => {
+    questions.getSurveyData()
+    .then(questions => {
+      res.json(questions);
+    })
+    .catch (err => {
+      res.status(500).json({ message: 'Failed to get questions' });
+    });
+  });
+
   router.get('/:id', (req, res) => {
     const { id } = req.params;
-    questions.getSurveyData(id)
+    questions.getQuestionWithOptions(id)
     .then(question => {
         console.log('question', question)
       if (!question) {
