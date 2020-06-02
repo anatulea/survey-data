@@ -25,23 +25,45 @@ function findByIdName(id) {
 //   return questions;
 // }
 
-function getSurveyData(id) {
-  return db('questions')
-    .where('questions.id', '=', id)
-    .then(question => {
-      question.map(item => {
-        console.log('QUESTION', item);
+// function getSurveyData(id) {
+//   return db('questions')
+//     .where('questions.id', '=', id)
+//     .then(question => {
+//       question.map(item => {
+//         console.log('QUESTION', item);
 
-        const options = db('options')
-          .where('options.question_id', '=', 'questions.id')
-          .select('options.description', 'options.value');
+//         const options = db('options')
+//           .where('options.question_id', '=', 'questions.id')
+//           .select('options.description', 'options.value');
 
-        item.optionsArr = options;
-      });
-      return question;
-    });
-}
+//         item.optionsArr = options;
+//       });
+//       return question;
+//     });
+// }
 
+function getAnswerOptionsById(id) {
+    return db('options')
+      .where('options.question_id', id)
+      .then(options => {
+        return options;
+      });
+  }
+  
+  function getQuestions(id) {
+    return db('questions').where('questions.id', id)
+      .then(questions => {
+        return questions;
+      })
+  }
+  
+  
+  async function getSurveyData(id) {
+    let questions = await getQuestions(id);
+    questions[0]["options"] = await getAnswerOptionsById(id);
+    return questions;
+  }
+  
 module.exports = {
   find,
   findById,
